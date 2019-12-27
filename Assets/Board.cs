@@ -12,7 +12,7 @@ public class Board : MonoBehaviour
     public Tuple<int, int> playerTwoPosition;
     public GameObject tilePrefab;
     public Vector3 tileOffset = new Vector3(0.0f, 0, 0.0f);
-    public Vector3 boardOffset = new Vector3(0.0f, 0, 0.0f);
+    public Vector3 boardOffset = new Vector3(-5.0f, 0, -5.0f);
     public GameObject numberPrefab;
     public GameObject playerOnePrefab;
     public GameObject playerTwoPrefab;
@@ -36,7 +36,8 @@ public class Board : MonoBehaviour
     void Update()
     {
         UpdateMouseOver();
-        Debug.Log(mouseOver);
+        if (Input.GetMouseButtonDown(0))
+            Debug.Log(mouseOver);
     }
 
     private void Generate()
@@ -59,8 +60,8 @@ public class Board : MonoBehaviour
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 25.0f,
             LayerMask.GetMask("Board")))
         {
-            mouseOver.x = (int)(hit.point.x);
-            mouseOver.y = (int)(hit.point.z);
+            mouseOver.x = (int)(hit.point.x + 5.0f) ;
+            mouseOver.y = (int)(hit.point.z + 5.0f) ;
 
         }
         else
@@ -94,12 +95,12 @@ public class Board : MonoBehaviour
 
     private void PlaceTile(Tile t, int i, int j)
     {
-        t.transform.position = (Vector3.right * i) + (Vector3.forward * j);
+        t.transform.position = (Vector3.right * i) + (Vector3.forward * j) - boardOffset;
     }
 
     private void PlacePlayer(Player p, int i, int j, float k)
     {
-        p.transform.position = (Vector3.right * i) + (Vector3.forward * j) + (Vector3.up * k);
+        p.transform.position = (Vector3.right * i) + (Vector3.forward * j) + (Vector3.up * k) - boardOffset;
     }
 
     private void PlaceGameObject(GameObject go, Vector3 position)
