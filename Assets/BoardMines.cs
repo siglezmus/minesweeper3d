@@ -27,11 +27,6 @@ public partial class Board
         if (!tiles[i, j].mine) 
             return;
 
-        RecountTiles(i,j);
-    }
-
-    public void RecountTiles(int i, int j)
-    {
         if (i - 1 >= 0)
         {
             if (j - 1 >= 0)
@@ -72,7 +67,7 @@ public partial class Board
             tiles[i, j + 1].number++;
         }
     }
-
+    
 
     private void SetAllTextNumbers()
     {

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Xml.Serialization;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public partial class Board : MonoBehaviour
 {
@@ -9,6 +12,7 @@ public partial class Board : MonoBehaviour
     public Tuple<int, int> playerTwoPosition;
 
     public GameObject tilePrefab;
+    public GameObject textHolderPrefab;
 
     public Vector3 tileOffset = new Vector3(0.0f, 0, 0.0f);
     public Vector3 boardOffset = new Vector3(-5.0f, 0, -5.0f);
@@ -26,7 +30,24 @@ public partial class Board : MonoBehaviour
 
     private Vector2 mouseOver;
 
+    Stopwatch stopwatch = new Stopwatch();
+
     public TextMesh[,] NumberTextMeshes;
+
+    public TextMesh playerOneHealth;
+    public TextMesh playerTwoHealth;
+
+    public TextMesh playerOneStamina;
+    public TextMesh playerTwoStamina;
+
+    public TextMesh playerOneCoins;
+    public TextMesh playerTwoCoins;
+
+    public TextMesh playerOneTypeOfMoving;
+    public TextMesh playerTwoTypeOfMoving;
+
+    public TextMesh CurrentPlayMesh;
+    public TextMesh TurnTimeLeft;
 
     // Start is called before the first frame update
     void Start()
@@ -34,41 +55,123 @@ public partial class Board : MonoBehaviour
         Generate();
     }
 
+    void DisplayStat()
+    {
+        playerOneHealth.text = "HP1:" + playerOne.currentHealth;
+        playerOneHealth.transform.position = new Vector3(-8.0f, 0, 5.0f);
+        playerOneCoins.text = "Coins1:" + playerOne.coins;
+        playerOneCoins.transform.position = new Vector3(-8.0f, 0, 4.5f);
+        playerOneStamina.text = "Stamina1:" + playerOne.currentStamina;
+        playerOneStamina.transform.position = new Vector3(-8.0f, 0, 4.0f);
+        playerOneTypeOfMoving.text = "Type1:" + (playerOne.currentMovingType ? "Safe" : "Unsafe");
+        playerOneTypeOfMoving.transform.position = new Vector3(-8.0f, 0, 3.5f);
+
+        playerTwoHealth.text = "HP2:" + playerTwo.currentHealth;
+        playerTwoHealth.transform.position = new Vector3(-8.0f, 0, 3.0f);
+        playerTwoCoins.text = "Coins2:" + playerTwo.coins;
+        playerTwoCoins.transform.position = new Vector3(-8.0f, 0, 2.5f);
+        playerTwoStamina.text = "Stamina2:" + playerTwo.currentStamina;
+        playerTwoStamina.transform.position = new Vector3(-8.0f, 0, 2.0f);
+        playerTwoTypeOfMoving.text = "Type2:" + (playerTwo.currentMovingType ? "Safe" : "Unsafe");
+        playerTwoTypeOfMoving.transform.position = new Vector3(-8.0f, 0, 1.5f);
+
+        CurrentPlayMesh.text = "Current player:" + (currentPlayer ? "P1" : "P2");
+        CurrentPlayMesh.transform.position = new Vector3(-8.0f, 0, 1.0f);
+        TurnTimeLeft.text = "Time left:" + (90 - stopwatch.Elapsed.Minutes*60 - stopwatch.Elapsed.Seconds);
+        TurnTimeLeft.transform.position = new Vector3(-8.0f, 0, 0.5f);
+    }
+
     // Update is called once per frame
+
+    public void RecountTiles(int x, int y)
+    {
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            for (int j = y - 1; j <= y + 1; j++)
+            {
+                if (i != x && j != y && x < 10 && x >=0 && y < 10 && x >=0)
+                    tiles[i, j].number -= 1;
+            }
+        }
+    }
     void Update()
     {
-        //RecountTiles();
-        SetAllTextNumbers();
-        UpdateMouseOver();
-        if (Input.GetMouseButtonDown(0))
+        DisplayStat();
+
+        if (GameIsNotEnded())
         {
-            //if turn is valid king template and no other player
-            //if there is stamina
-            //Debug.Log(mouseOver);
-
-            int x = (int) mouseOver.x;
-            int y = (int) mouseOver.y;
-
-            if (IsTurnValid(x, y))
+            stopwatch.Start();
+            SetAllTextNumbers();
+            UpdateMouseOver();
+            if (Input.GetMouseButtonDown(0))
             {
-                Move(x, y);
+                //if turn is valid king template and no other player
+                //if there is stamina
+                //Debug.Log(mouseOver);
+
+                int x = (int)mouseOver.x;
+                int y = (int)mouseOver.y;
+
+                if (IsTurnValid(x, y))
+                {
+                    Move(x, y);
+                    /*
+                     *             if (tiles[x, y].mine)
+                RecountTiles(x, y);
+                     */
+                }
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.E) || stopwatch.Elapsed.Minutes * 60 + stopwatch.Elapsed.Seconds >= 90)
+            {
+                EndTurn();
+            }
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                Player p = currentPlayer ? playerOne : playerTwo;
+                p.SwitchMovingType();
             }
 
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-           EndTurn();
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Player p = currentPlayer ? playerOne : playerTwo;
-            p.SwitchMovingType();
+            Reset();
         }
 
 
 
+    }
+
+
+    public void Reset()
+    {
+
+    }
+    public bool GameIsNotEnded()
+    {
+        //if both players are alive 
+        //if there are unopened tiles
+        if (playerOne.currentHealth > 0 && playerTwo.currentHealth >= 0 && IsThereAreUnopenedTile())
+            return true;
+        else
+            return false;
+    }
+
+    public bool IsThereAreUnopenedTile()
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (!tiles[i, j].visible)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     //kingTemplateAndNoOtherPlayerCheck
@@ -107,6 +210,8 @@ public partial class Board : MonoBehaviour
 
             Debug.Log(p.currentStamina);
             Debug.Log(p.coins);
+            
+
         }
 
     }
@@ -114,13 +219,14 @@ public partial class Board : MonoBehaviour
     private void EndTurn()
     {
         Player p = currentPlayer ? playerOne : playerTwo;
-
         p.EndTurnReset();
         currentPlayer = !currentPlayer;
+        stopwatch.Reset();
     }
 
     private void Generate()
     {
+        GenerateStat();
         GenerateTiles();
         GeneratePlayers();
         GenerateMines();
@@ -174,6 +280,47 @@ public partial class Board : MonoBehaviour
                 t.col = j;
             }
         }
+
+    }
+
+    private void GenerateStat()
+    {
+
+        GameObject go1 = Instantiate(textHolderPrefab) as GameObject;
+        go1.transform.SetParent(transform);
+        GameObject go2 = Instantiate(textHolderPrefab) as GameObject;
+        go2.transform.SetParent(transform);
+        GameObject go3 = Instantiate(textHolderPrefab) as GameObject;
+        go3.transform.SetParent(transform);
+        GameObject go4 = Instantiate(textHolderPrefab) as GameObject;
+        go4.transform.SetParent(transform);
+        GameObject go5 = Instantiate(textHolderPrefab) as GameObject;
+        go5.transform.SetParent(transform);
+        GameObject go6 = Instantiate(textHolderPrefab) as GameObject;
+        go6.transform.SetParent(transform);
+        GameObject go7 = Instantiate(textHolderPrefab) as GameObject;
+        go7.transform.SetParent(transform);
+        GameObject go8 = Instantiate(textHolderPrefab) as GameObject;
+        go8.transform.SetParent(transform);
+        GameObject go9 = Instantiate(textHolderPrefab) as GameObject;
+        go9.transform.SetParent(transform);
+        GameObject go10 = Instantiate(textHolderPrefab) as GameObject;
+        go10.transform.SetParent(transform);
+
+        playerOneHealth = go1.GetComponentInChildren<TextMesh>();
+        playerTwoHealth = go2.GetComponentInChildren<TextMesh>();
+
+        playerOneStamina = go3.GetComponentInChildren<TextMesh>();
+        playerTwoStamina = go4.GetComponentInChildren<TextMesh>();
+    
+        playerOneCoins = go5.GetComponentInChildren<TextMesh>();
+        playerTwoCoins = go6.GetComponentInChildren<TextMesh>();
+
+        playerOneTypeOfMoving = go7.GetComponentInChildren<TextMesh>();
+        playerTwoTypeOfMoving = go8.GetComponentInChildren<TextMesh>();
+
+        CurrentPlayMesh = go9.GetComponentInChildren<TextMesh>();
+        TurnTimeLeft = go10.GetComponent<TextMesh>();
 
     }
 

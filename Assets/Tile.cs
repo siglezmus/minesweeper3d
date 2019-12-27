@@ -20,7 +20,7 @@ public class Tile : MonoBehaviour
     public void Open(Player p)
     {
         p.IncreaseCoins(coins);
-        if(mine)
+        if(mine && !p.currentMovingType)
             p.DecreaseHealth();
         p.SpendOneTurnStamina();
 
