@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 2055cd35d0facdf44823df3697ac1fa8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - tilePrefab: {fileID: 6280319095847359404, guid: 53452fceff953ff47b657d51839ecf33,
+      type: 3}
+  - numberPrefab: {fileID: 3924781205000853537, guid: 511adc0dd921bf2499b3f2ff78736977,
+      type: 3}
+  - playerOnePrefab: {fileID: 6279824761299587773, guid: 6d52acd9acf7fa74f99aabc96695c037,
+      type: 3}
+  - playerTwoPrefab: {fileID: 700441532012041435, guid: 844de60774cd16a45a4d9250b0f78a69,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
