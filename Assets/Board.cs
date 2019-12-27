@@ -46,11 +46,11 @@ public partial class Board : MonoBehaviour
             int x = (int) mouseOver.x;
             int y = (int) mouseOver.y;
 
-            //if (kingTemplateAndNoOtherPlayerCheck(x, y))
-            //{
+            if (kingTemplateAndNoOtherPlayerCheck(x, y))
+            {
                 Move(x, y);
 
-            //}
+            }
 
         }
 
@@ -62,18 +62,12 @@ public partial class Board : MonoBehaviour
         int currentX = currentPlayer ? playerOnePosition.Item1 : playerTwoPosition.Item1;
         int currentY = currentPlayer ? playerOnePosition.Item2 : playerTwoPosition.Item2;
 
-        Tuple<int, int> targetTuple = new Tuple<int, int>(targetX, targetY);
-
-        Tuple<int,int> p1 = new Tuple<int, int>(currentX,currentY);
-
         int anotherPlayerX = currentPlayer ? playerTwoPosition.Item1 : playerOnePosition.Item1;
         int anotherPlayerY = currentPlayer ? playerTwoPosition.Item2 : playerOnePosition.Item2;
 
-        Tuple<int, int> p2 = new Tuple<int, int>(anotherPlayerX, anotherPlayerY);
-
         if (Math.Abs(targetX - currentX) <= 1 && Math.Abs(targetY - currentY) <= 1 &&
-            (targetX != anotherPlayerX && targetY != anotherPlayerY) &&
-            (targetX != currentX && targetY != currentY))
+            (targetX != anotherPlayerX || targetY != anotherPlayerY) &&
+            (targetX != currentX || targetY != currentY))
             return true;
         else
             return false;
@@ -95,7 +89,6 @@ public partial class Board : MonoBehaviour
     {
         GenerateTiles();
         GeneratePlayers();
-
         GenerateMines();
         SetAllTextNumbers();
     }
