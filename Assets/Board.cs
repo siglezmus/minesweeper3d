@@ -16,6 +16,9 @@ public class Board : MonoBehaviour
     public GameObject numberPrefab;
     public GameObject playerOnePrefab;
     public GameObject playerTwoPrefab;
+    public bool currentPlayer;
+    public float playerOneYShift = 0.6f;
+    public float playerTwoYShift = 0.7f;
 
     public Player playerOne;
     public Player playerTwo;
@@ -37,7 +40,19 @@ public class Board : MonoBehaviour
     {
         UpdateMouseOver();
         if (Input.GetMouseButtonDown(0))
-            Debug.Log(mouseOver);
+        {
+            //if turn is valid king template and no other player
+            //if there is stamina
+            Move(currentPlayer, (int)mouseOver.x, (int)mouseOver.y);
+
+        }
+
+        //Debug.Log(mouseOver);
+    }
+
+    public void Move(bool current, int x, int y)
+    {
+        PlacePlayer(current? playerOne: playerTwo,x,y, current? playerOneYShift: playerTwoYShift);
     }
 
     private void Generate()
@@ -130,15 +145,16 @@ public class Board : MonoBehaviour
         playerTwo = new Player();
         playerOnePosition = new Tuple<int, int>(0, 0);
         playerTwoPosition = new Tuple<int, int>(rows - 1, cols - 1);
+        bool currentPlayer = true;
 
         GameObject go = Instantiate(playerOnePrefab) as GameObject;
         go.transform.SetParent(transform);
         playerOne = go.GetComponent<Player>();
-        PlacePlayer(playerOne, playerOnePosition.Item1, playerOnePosition.Item2, 0.6f);
+        PlacePlayer(playerOne, playerOnePosition.Item1, playerOnePosition.Item2, playerOneYShift);
 
         GameObject go1 = Instantiate(playerTwoPrefab) as GameObject;
         go1.transform.SetParent(transform);
         playerTwo = go1.GetComponent<Player>();
-        PlacePlayer(playerTwo, playerTwoPosition.Item1, playerTwoPosition.Item2, 0.7f);
+        PlacePlayer(playerTwo, playerTwoPosition.Item1, playerTwoPosition.Item2, playerTwoYShift);
     }
 }
