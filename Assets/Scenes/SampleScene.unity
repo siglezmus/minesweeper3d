@@ -275,6 +275,8 @@ GameObject:
   - component: {fileID: 687772853}
   - component: {fileID: 687772854}
   - component: {fileID: 687772855}
+  - component: {fileID: 687772857}
+  - component: {fileID: 687772856}
   m_Layer: 9
   m_Name: Board
   m_TagString: Untagged
@@ -315,12 +317,13 @@ MonoBehaviour:
     type: 3}
   tileOffset: {x: 0.5, y: 0, z: 0.5}
   boardOffset: {x: 4.5, y: 0, z: 4.5}
-  numberPrefab: {fileID: 3924781205000853537, guid: 511adc0dd921bf2499b3f2ff78736977,
-    type: 3}
   playerOnePrefab: {fileID: 6279824761299587773, guid: 6d52acd9acf7fa74f99aabc96695c037,
     type: 3}
   playerTwoPrefab: {fileID: 700441532012041435, guid: 844de60774cd16a45a4d9250b0f78a69,
     type: 3}
+  currentPlayer: 0
+  playerOneYShift: 0.6
+  playerTwoYShift: 0.7
   playerOne: {fileID: 0}
   playerTwo: {fileID: 0}
 --- !u!65 &687772855
@@ -336,6 +339,59 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 1, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &687772856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687772852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33fd1b8f0e3af564fadb792fdd927866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  safeTurnStaminaCost: 10
+  unsafeTurnStaminaCost: 5
+  currentMovingType: 1
+  movingTypeSwitched: 0
+  coins: 0
+  currentHealth: 3
+  maxHealth: 3
+  currentStamina: 100
+  maxStamina: 100
+  abilityOne: 0
+  abilityTwo: 1
+  abilitiyOneCooldown: 0
+  abilitiyTwoCooldown: 0
+  board: {fileID: 0}
+--- !u!114 &687772857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687772852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2055cd35d0facdf44823df3697ac1fa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rows: 10
+  cols: 10
+  tilePrefab: {fileID: 6280319095847359404, guid: 53452fceff953ff47b657d51839ecf33,
+    type: 3}
+  tileOffset: {x: 0, y: 0, z: 0}
+  boardOffset: {x: -5, y: 0, z: -5}
+  playerOnePrefab: {fileID: 6279824761299587773, guid: 6d52acd9acf7fa74f99aabc96695c037,
+    type: 3}
+  playerTwoPrefab: {fileID: 700441532012041435, guid: 844de60774cd16a45a4d9250b0f78a69,
+    type: 3}
+  currentPlayer: 0
+  playerOneYShift: 0.6
+  playerTwoYShift: 0.7
+  playerOne: {fileID: 0}
+  playerTwo: {fileID: 0}
 --- !u!1001 &8705776778947013576
 PrefabInstance:
   m_ObjectHideFlags: 0

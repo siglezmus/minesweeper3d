@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
 
     public bool currentMovingType = true;
 
+    public bool movingTypeSwitched = false;
+
     public int coins = 0;
 
     public int currentHealth = 3;
@@ -25,18 +27,14 @@ public class Player : MonoBehaviour
 
     public int abilityTwo = 1;
 
-    int abilitiyOneCooldown = 0;
+    public int abilitiyOneCooldown = 0;
 
-    int abilitiyTwoCooldown = 0;
-
-    private Board board; // required for abilities to affect board state
+    public int abilitiyTwoCooldown = 0;
+    public Board board; // required for abilities to affect board state
 
     // Start is called before the first frame update
 
-    public Player(Board board)
-    {
-        this.board = board;
-    }
+
     void Start()
     {
         
@@ -81,7 +79,12 @@ public class Player : MonoBehaviour
 
     public void SwitchMovingType()
     {
-        currentMovingType = !currentMovingType;
+        if (!movingTypeSwitched)
+        {
+            currentMovingType = !currentMovingType;
+            movingTypeSwitched = true;
+        }
+        
     }
 
     public void SpendOneTurnStamina()
@@ -97,6 +100,7 @@ public class Player : MonoBehaviour
     public void EndTurnReset()
     {
         currentStamina = maxStamina;
+        movingTypeSwitched = false;
 
         if (abilitiyOneCooldown != 0)
             abilitiyOneCooldown -= 1;

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6279824761299587769}
   - component: {fileID: 6279824761299587770}
   - component: {fileID: 6279824761299587771}
-  - component: {fileID: 114909276839366908}
+  - component: {fileID: 114086174222104200}
   m_Layer: 0
   m_Name: playerOnePrefab
   m_TagString: Untagged
@@ -78,7 +78,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &114909276839366908
+--- !u!114 &114086174222104200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,3 +90,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33fd1b8f0e3af564fadb792fdd927866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  safeTurnStaminaCost: 10
+  unsafeTurnStaminaCost: 5
+  currentMovingType: 1
+  coins: 0
+  currentHealth: 3
+  maxHealth: 3
+  currentStamina: 100
+  maxStamina: 100
+  abilityOne: 0
+  abilityTwo: 1
+  abilitiyOneCooldown: 0
+  abilitiyTwoCooldown: 0
+  board: {fileID: 0}

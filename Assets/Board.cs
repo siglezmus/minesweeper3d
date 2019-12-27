@@ -7,12 +7,12 @@ public partial class Board : MonoBehaviour
     public int cols = 10;
     public Tuple<int, int> playerOnePosition;
     public Tuple<int, int> playerTwoPosition;
-    
+
     public GameObject tilePrefab;
-    
+
     public Vector3 tileOffset = new Vector3(0.0f, 0, 0.0f);
     public Vector3 boardOffset = new Vector3(-5.0f, 0, -5.0f);
-    
+
     public GameObject playerOnePrefab;
     public GameObject playerTwoPrefab;
     public bool currentPlayer;
@@ -21,6 +21,7 @@ public partial class Board : MonoBehaviour
 
     public Player playerOne;
     public Player playerTwo;
+
     public Tile[,] tiles;
 
     private Vector2 mouseOver;
@@ -36,28 +37,42 @@ public partial class Board : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //RecountTiles();
+        SetAllTextNumbers();
         UpdateMouseOver();
         if (Input.GetMouseButtonDown(0))
         {
             //if turn is valid king template and no other player
             //if there is stamina
-            Debug.Log(mouseOver);
+            //Debug.Log(mouseOver);
 
             int x = (int) mouseOver.x;
             int y = (int) mouseOver.y;
 
-            if (kingTemplateAndNoOtherPlayerCheck(x, y))
+            if (IsTurnValid(x, y))
             {
                 Move(x, y);
-
             }
 
         }
 
-        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+           EndTurn();
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Player p = currentPlayer ? playerOne : playerTwo;
+            p.SwitchMovingType();
+        }
+
+
+
     }
 
-    public bool kingTemplateAndNoOtherPlayerCheck(int targetX, int targetY)
+    //kingTemplateAndNoOtherPlayerCheck
+    public bool IsTurnValid(int targetX, int targetY)
     {
         int currentX = currentPlayer ? playerOnePosition.Item1 : playerTwoPosition.Item1;
         int currentY = currentPlayer ? playerOnePosition.Item2 : playerTwoPosition.Item2;
@@ -75,14 +90,33 @@ public partial class Board : MonoBehaviour
 
     public void Move(int x, int y)
     {
-        PlacePlayer(currentPlayer ? playerOne: playerTwo,x,y, currentPlayer ? playerOneYShift: playerTwoYShift);
+        Player p = currentPlayer ? playerOne : playerTwo;
 
-        Tuple<int, int> temp = new Tuple<int, int>(x, y);
+        if (p.IsThereEnoughStaminaToMove())
+        {
+            tiles[x,y].Open(p);
 
-        if (currentPlayer)
-            playerOnePosition = temp;
-        else
-            playerTwoPosition = temp;
+            PlacePlayer(p, x, y, currentPlayer ? playerOneYShift : playerTwoYShift);
+
+            Tuple<int, int> temp = new Tuple<int, int>(x, y);
+
+            if (currentPlayer)
+                playerOnePosition = temp;
+            else
+                playerTwoPosition = temp;
+
+            Debug.Log(p.currentStamina);
+            Debug.Log(p.coins);
+        }
+
+    }
+
+    private void EndTurn()
+    {
+        Player p = currentPlayer ? playerOne : playerTwo;
+
+        p.EndTurnReset();
+        currentPlayer = !currentPlayer;
     }
 
     private void Generate()
@@ -90,6 +124,7 @@ public partial class Board : MonoBehaviour
         GenerateTiles();
         GeneratePlayers();
         GenerateMines();
+        FillTiles();
         SetAllTextNumbers();
     }
 
@@ -140,9 +175,31 @@ public partial class Board : MonoBehaviour
             }
         }
 
-        //TryDelete(0,0);
     }
 
+    private void FillTiles()
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+
+                if (Equals(playerOnePosition, new Tuple<int, int>(i, j))
+                    || Equals(playerTwoPosition, new Tuple<int, int>(i, j)))
+                {
+                    tiles[i, j].coins = 0;
+                    tiles[i, j].visible = true;
+                }
+                else
+                {
+                    tiles[i, j].coins = 3;
+                    tiles[i, j].visible = false;
+                }
+
+                
+            }
+        }
+    }
     private void PlaceTile(Tile t, int i, int j)
     {
         t.transform.position = (Vector3.right * i) + (Vector3.forward * j) - boardOffset;
@@ -158,21 +215,16 @@ public partial class Board : MonoBehaviour
         go.transform.position = position;
     }
 
-    private bool IsTurnValid(bool currentPlayer)
-    {
-        return true;
-    }
-
-    private void TryDelete(int x, int y)
-    {
-        Destroy(tiles[x,y].gameObject);
-        tiles[x, y] = null;
-    }
-
     private void GeneratePlayers()
     {
-        playerOne = new Player(this);
-        playerTwo = new Player(this);
+        //playerOne = gameObject.GetComponent<Player>();
+        //playerTwo = gameObject.GetComponent<Player>();
+        playerOne = gameObject.AddComponent<Player>();
+        playerTwo = gameObject.AddComponent<Player>();
+        //playerOne = new Player();
+        //playerTwo = new Player();
+        playerOne.board = this;
+        playerTwo.board = this;
         playerOnePosition = new Tuple<int, int>(0, 0);
         playerTwoPosition = new Tuple<int, int>(rows - 1, cols - 1);
         bool currentPlayer = true;

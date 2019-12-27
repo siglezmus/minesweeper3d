@@ -27,15 +27,20 @@ public partial class Board
         if (!tiles[i, j].mine) 
             return;
 
+        RecountTiles(i,j);
+    }
+
+    public void RecountTiles(int i, int j)
+    {
         if (i - 1 >= 0)
         {
             if (j - 1 >= 0)
             {
                 tiles[i - 1, j - 1].number++;
             }
-            
-            tiles[i - 1, j    ].number++;
-            
+
+            tiles[i - 1, j].number++;
+
             if (j + 1 < tiles.GetLength(1))
             {
                 tiles[i - 1, j + 1].number++;
@@ -49,8 +54,8 @@ public partial class Board
                 tiles[i + 1, j - 1].number++;
             }
 
-            tiles[i + 1, j    ].number++;
-            
+            tiles[i + 1, j].number++;
+
             if (j + 1 < tiles.GetLength(1))
             {
                 tiles[i + 1, j + 1].number++;
@@ -59,14 +64,15 @@ public partial class Board
 
         if (j - 1 >= 0)
         {
-            tiles[i    , j - 1].number++;
+            tiles[i, j - 1].number++;
         }
 
         if (j + 1 < tiles.GetLength(1))
         {
-            tiles[i    , j + 1].number++;
+            tiles[i, j + 1].number++;
         }
     }
+
 
     private void SetAllTextNumbers()
     {
@@ -74,7 +80,21 @@ public partial class Board
         {
             for (int j = 0; j < tiles.GetLength(1); j++)
             {
-                NumberTextMeshes[i, j].text = tiles[i, j].number + (tiles[i, j].mine ? "m" : "");
+                //NumberTextMeshes[i, j].text = tiles[i, j].number + (tiles[i, j].mine ? "m" : "");
+
+                if (tiles[i, j].mine && tiles[i, j].visible)
+                    NumberTextMeshes[i, j].text = "m";
+                else if (!tiles[i, j].mine && tiles[i, j].visible)
+                {
+                    NumberTextMeshes[i, j].text = tiles[i, j].number.ToString();
+                }
+                else
+                {
+                    NumberTextMeshes[i, j].text = "";
+                }
+
+
+
             }
         }
     }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6280319095847359392}
   - component: {fileID: 6280319095847359395}
   - component: {fileID: 6280319095847359394}
-  - component: {fileID: 114486913482568080}
+  - component: {fileID: 114266059795252626}
   m_Layer: 0
   m_Name: tilePrefab
   m_TagString: Untagged
@@ -79,7 +79,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &114486913482568080
+--- !u!114 &114266059795252626
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,9 +91,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be7395c6f1ef5ab4585f0bae54a762a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visible: 0
   mine: 0
   number: 0
-  coins: 0
+  coins: 3
   row: 0
   col: 0
 --- !u!1 &6316926604958196263
