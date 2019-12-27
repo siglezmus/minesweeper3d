@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 
-public class Board : MonoBehaviour
+public partial class Board : MonoBehaviour
 {
     public int rows = 10;
     public int cols = 10;
     public Tuple<int, int> playerOnePosition;
     public Tuple<int, int> playerTwoPosition;
+    
     public GameObject tilePrefab;
+    
     public Vector3 tileOffset = new Vector3(0.0f, 0, 0.0f);
     public Vector3 boardOffset = new Vector3(0.0f, 0, 0.0f);
-    public GameObject numberPrefab;
+    
     public GameObject playerOnePrefab;
     public GameObject playerTwoPrefab;
 
@@ -23,13 +22,12 @@ public class Board : MonoBehaviour
 
     private Vector2 mouseOver;
 
-
+    public TextMesh[,] NumberTextMeshes;
 
     // Start is called before the first frame update
     void Start()
     {
         Generate();
-
     }
 
     // Update is called once per frame
@@ -43,7 +41,9 @@ public class Board : MonoBehaviour
     {
         GenerateTiles();
         GeneratePlayers();
-        //FillTilesWithValues();
+
+        GenerateMines();
+        SetAllTextNumbers();
     }
 
     private void UpdateMouseOver()
@@ -70,10 +70,10 @@ public class Board : MonoBehaviour
         }
     }
 
-
     private void GenerateTiles()
     {
         tiles = new Tile[rows, cols];
+        NumberTextMeshes = new TextMesh[rows, cols];
 
         for (int i = 0; i < rows; i++)
         { 
@@ -81,8 +81,12 @@ public class Board : MonoBehaviour
             {
                 GameObject go = Instantiate(tilePrefab) as GameObject;
                 go.transform.SetParent(transform);
+                
+                NumberTextMeshes[i,j] = go.GetComponentInChildren<TextMesh>();
+
                 Tile t = go.GetComponent<Tile>();
                 tiles[i, j] = t;
+
                 PlaceTile(t, i, j);
                 t.row = i;
                 t.col = j;
@@ -105,11 +109,6 @@ public class Board : MonoBehaviour
     private void PlaceGameObject(GameObject go, Vector3 position)
     {
         go.transform.position = position;
-    }
-
-    private void FillTilesWithValues()
-    {
-
     }
 
     private bool IsTurnValid(bool currentPlayer)

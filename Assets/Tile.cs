@@ -13,6 +13,7 @@ public class Tile : MonoBehaviour
     public int row;
 
     public int col;
+
     // Start is called before the first frame update
     void Start()
     {
