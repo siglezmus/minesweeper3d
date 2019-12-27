@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    private bool visible;
+
     public bool mine;
 
     public int number;
