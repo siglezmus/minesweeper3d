@@ -109,5 +109,14 @@ public class Player : MonoBehaviour
             abilitiyTwoCooldown -= 1;
     }
 
-    
+    public void Reset()
+    {
+        currentStamina = 100;
+        currentHealth = 3;
+        currentMovingType = true;
+        coins = 0;
+        movingTypeSwitched = false;
+    }
+
+
 }

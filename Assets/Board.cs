@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Xml.Serialization;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Random = System.Random;
 
 public partial class Board : MonoBehaviour
 {
@@ -48,6 +50,7 @@ public partial class Board : MonoBehaviour
 
     public TextMesh CurrentPlayMesh;
     public TextMesh TurnTimeLeft;
+    public TextMesh Winner;
 
     // Start is called before the first frame update
     void Start()
@@ -135,20 +138,72 @@ public partial class Board : MonoBehaviour
             }
 
         }
-
-        if (Input.GetKeyDown(KeyCode.R))
+        else
         {
-            Reset();
+            //how to do this once
+            DisplayWinner();
+            //Console.ReadKey();
+            //Thread.Sleep(5000);
+            stopwatch.Reset();
+            stopwatch.Stop();
+            //here to wait a little
+            //Reset();
         }
 
+    }
 
+    public void DisplayWinner()
+    {
+        GameObject go = Instantiate(textHolderPrefab) as GameObject;
+        go.transform.SetParent(transform);
+        Winner = go.GetComponentInChildren<TextMesh>();
 
+        int w;
+        String temp;
+
+        if (playerOne.currentHealth == 0)
+            w = 2;
+        else if (playerTwo.currentHealth == 0)
+            w = 1;
+        else if(playerOne.coins > playerTwo.coins)
+            w = 1;
+        else if (playerTwo.coins > playerOne.coins)
+            w = 2;
+        else
+            w = 0;
+
+        if (w == 1)
+            temp = "Player one has won";
+        else if (w == 2)
+            temp = "Player two has won";
+        else
+            temp = "Draw";
+
+        Winner.text = temp;
+        Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
     }
 
 
     public void Reset()
     {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                Destroy(tiles[i,j].gameObject);
+                Destroy(NumberTextMeshes[i,j].gameObject);
+            }
+        }
 
+        tiles = null;
+        GenerateTiles();
+        GenerateMines();
+        FillTiles();
+        SetAllTextNumbers();
+        playerOnePosition = new Tuple<int, int>(0,0);
+        playerTwoPosition = new Tuple<int, int>(rows-1,cols-1);
+        playerOne.Reset();
+        playerTwo.Reset();
     }
     public bool GameIsNotEnded()
     {
@@ -339,7 +394,8 @@ public partial class Board : MonoBehaviour
                 }
                 else
                 {
-                    tiles[i, j].coins = 3;
+                    Random r = new Random();
+                    tiles[i, j].coins = r.Next(1,15);
                     tiles[i, j].visible = false;
                 }
 
@@ -374,7 +430,7 @@ public partial class Board : MonoBehaviour
         playerTwo.board = this;
         playerOnePosition = new Tuple<int, int>(0, 0);
         playerTwoPosition = new Tuple<int, int>(rows - 1, cols - 1);
-        bool currentPlayer = true;
+        currentPlayer = true;
 
         GameObject go = Instantiate(playerOnePrefab) as GameObject;
         go.transform.SetParent(transform);
