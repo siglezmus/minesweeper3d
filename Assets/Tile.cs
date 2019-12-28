@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
 
     public int number;
 
-    public int coins = 3;
+    public int coins = 0;
 
     public int row;
 

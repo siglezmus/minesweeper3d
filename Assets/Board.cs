@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
@@ -51,6 +53,7 @@ public partial class Board : MonoBehaviour
     public TextMesh CurrentPlayMesh;
     public TextMesh TurnTimeLeft;
     public TextMesh Winner;
+    public bool kostyl = true;
 
     // Start is called before the first frame update
     void Start()
@@ -152,13 +155,27 @@ public partial class Board : MonoBehaviour
         else
         {
             //how to do this once
-            DisplayWinner();
+            
             //Console.ReadKey();
-            //Thread.Sleep(5000);
-            stopwatch.Reset();
-            stopwatch.Stop();
+
+            if (kostyl)
+            {
+                DisplayWinner();
+                stopwatch.Reset();
+                stopwatch.Stop();
+                Thread.Sleep(5000);
+                kostyl = false;
+                Reset();
+            }
+
+            
             //here to wait a little
-            //Reset();
+            
+        }
+        
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reset();
         }
 
     }
@@ -169,7 +186,7 @@ public partial class Board : MonoBehaviour
         go.transform.SetParent(transform);
         Winner = go.GetComponentInChildren<TextMesh>();
 
-        int w;
+        int w = -1;
         String temp;
 
         if (playerOne.currentHealth == 0)
@@ -184,37 +201,53 @@ public partial class Board : MonoBehaviour
             w = 0;
 
         if (w == 1)
+        {
             temp = "Player one has won";
-        else if (w == 2)
-            temp = "Player two has won";
-        else
-            temp = "Draw";
+            Winner.text = temp;
+            Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
+        }
 
-        Winner.text = temp;
-        Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
+        
+        else if (w == 2)
+        {
+            temp = "Player two has won";
+            Winner.text = temp;
+            Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
+        }
+        else if (w == 0)
+        {
+            temp = "Draw";
+            Winner.text = temp;
+            Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
+        }
+
     }
 
 
     public void Reset()
     {
-        for (int i = 0; i < rows; i++)
+        playerOne.Reset();
+        playerTwo.Reset();
+        playerOnePosition = new Tuple<int, int>(0,0);
+        playerTwoPosition = new Tuple<int, int>(rows-1, cols-1);
+        PlacePlayer(playerOne, playerOnePosition.Item1, playerOnePosition.Item2, playerOneYShift);
+        PlacePlayer(playerTwo, playerTwoPosition.Item1, playerTwoPosition.Item2, playerTwoYShift);
+
+        for (int i = 0; i < 10; i++)
         {
-            for (int j = 0; j < cols; j++)
+            for (int j = 0; j < 10; j++)
             {
-                Destroy(tiles[i,j].gameObject);
-                Destroy(NumberTextMeshes[i,j].gameObject);
+                tiles[i, j].number = 0;
+                tiles[i, j].visible = false;
+                tiles[i, j].coins = 0;
             }
         }
 
-        tiles = null;
-        GenerateTiles();
         GenerateMines();
         FillTiles();
         SetAllTextNumbers();
-        playerOnePosition = new Tuple<int, int>(0,0);
-        playerTwoPosition = new Tuple<int, int>(rows-1,cols-1);
-        playerOne.Reset();
-        playerTwo.Reset();
+        Destroy(Winner.gameObject);
+        
     }
     public bool GameIsNotEnded()
     {
