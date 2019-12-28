@@ -155,12 +155,12 @@ public partial class Board : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 Player p = currentPlayer ? playerOne : playerTwo;
-                p.UseAbility1(this);
+                UseAbility1(p);
             }
             if (Input.GetKeyDown(KeyCode.F2))
             {
                 Player p = currentPlayer ? playerOne : playerTwo;
-                p.UseAbility2(this);
+                UseAbility2(p);
             }
 
         }
@@ -513,5 +513,63 @@ public partial class Board : MonoBehaviour
         Tuple<int, int> temp = playerOnePosition;
         playerOnePosition = playerTwoPosition;
         playerTwoPosition = temp;
+    }
+
+    public void UseAbility1(Player p)
+    {
+        if (p.abilitiyOneCooldown == 0)
+            UseAbility( 1, p.abilityOne);
+    }
+    public void UseAbility2(Player p)
+    {
+        if (p.abilitiyTwoCooldown == 0)
+            UseAbility( 2, p.abilityTwo);
+    }
+
+    public void UseAbility(int num, int id)
+    {
+        Player p = currentPlayer ? playerOne : playerTwo;
+
+        switch (id)
+        {
+            case 1:
+                if (num == 1)
+                {
+                    p.abilitiyOneCooldown = Ability1(p);
+                }
+                else
+                {
+                    p.abilitiyTwoCooldown = Ability1(p);
+                }
+
+                break;
+            case 2:
+                if (num == 2)
+                {
+                    p.abilitiyOneCooldown = Ability2();
+                }
+                else
+                {
+                    p.abilitiyTwoCooldown = Ability2();
+                }
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+    }
+
+    public int Ability1(Player p)
+    {
+        p.currentHealth = p.maxHealth;
+        return 10;
+    }
+    public int Ability2()
+    {
+        this.swapPlayers();
+        return 10;
     }
 }
