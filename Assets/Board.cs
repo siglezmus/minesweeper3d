@@ -14,6 +14,7 @@ public partial class Board : MonoBehaviour
     public int cols = 10;
     public Tuple<int, int> playerOnePosition;
     public Tuple<int, int> playerTwoPosition;
+    public Tuple<int, int> score = new Tuple<int, int>(0,0);
 
     public GameObject tilePrefab;
     public GameObject textHolderPrefab;
@@ -53,6 +54,8 @@ public partial class Board : MonoBehaviour
     public TextMesh CurrentPlayMesh;
     public TextMesh TurnTimeLeft;
     public TextMesh Winner;
+    public TextMesh Score1;
+    public TextMesh Score2;
     public bool kostyl = true;
 
     // Start is called before the first frame update
@@ -85,6 +88,12 @@ public partial class Board : MonoBehaviour
         CurrentPlayMesh.transform.position = new Vector3(-8.0f, 0, 1.0f);
         TurnTimeLeft.text = "Time left:" + (90 - stopwatch.Elapsed.Minutes*60 - stopwatch.Elapsed.Seconds);
         TurnTimeLeft.transform.position = new Vector3(-8.0f, 0, 0.5f);
+
+        Score1.text = "Player one wins:" + score.Item1;
+        Score1.transform.position = new Vector3(-8.0f, 0, 0.0f);
+
+        Score2.text = "Player two wins:" + score.Item2;
+        Score2.transform.position = new Vector3(-8.0f, 0, -0.5f);
     }
 
     // Update is called once per frame
@@ -205,6 +214,7 @@ public partial class Board : MonoBehaviour
             temp = "Player one has won";
             Winner.text = temp;
             Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
+            score = new Tuple<int, int>(score.Item1 + 1, score.Item2);
         }
 
         
@@ -213,6 +223,7 @@ public partial class Board : MonoBehaviour
             temp = "Player two has won";
             Winner.text = temp;
             Winner.transform.position = new Vector3(-1.0f, 5, 0.5f);
+            score = new Tuple<int, int>(score.Item1, score.Item2+1);
         }
         else if (w == 0)
         {
@@ -405,6 +416,10 @@ public partial class Board : MonoBehaviour
         go9.transform.SetParent(transform);
         GameObject go10 = Instantiate(textHolderPrefab) as GameObject;
         go10.transform.SetParent(transform);
+        GameObject go11 = Instantiate(textHolderPrefab) as GameObject;
+        go11.transform.SetParent(transform);
+        GameObject go12 = Instantiate(textHolderPrefab) as GameObject;
+        go12.transform.SetParent(transform);
 
         playerOneHealth = go1.GetComponentInChildren<TextMesh>();
         playerTwoHealth = go2.GetComponentInChildren<TextMesh>();
@@ -420,6 +435,9 @@ public partial class Board : MonoBehaviour
 
         CurrentPlayMesh = go9.GetComponentInChildren<TextMesh>();
         TurnTimeLeft = go10.GetComponent<TextMesh>();
+
+        Score1 = go11.GetComponent<TextMesh>();
+        Score2 = go12.GetComponent<TextMesh>();
 
     }
 
