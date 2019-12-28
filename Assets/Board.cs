@@ -137,6 +137,17 @@ public partial class Board : MonoBehaviour
                 p.SwitchMovingType();
             }
 
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                Player p = currentPlayer ? playerOne : playerTwo;
+                p.UseAbility1(this);
+            }
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                Player p = currentPlayer ? playerOne : playerTwo;
+                p.UseAbility2(this);
+            }
+
         }
         else
         {
@@ -263,8 +274,8 @@ public partial class Board : MonoBehaviour
             else
                 playerTwoPosition = temp;
 
-            Debug.Log(p.currentStamina);
-            Debug.Log(p.coins);
+            //Debug.Log(p.currentStamina);
+            //Debug.Log(p.coins);
             
 
         }
@@ -426,8 +437,6 @@ public partial class Board : MonoBehaviour
         playerTwo = gameObject.AddComponent<Player>();
         //playerOne = new Player();
         //playerTwo = new Player();
-        playerOne.board = this;
-        playerTwo.board = this;
         playerOnePosition = new Tuple<int, int>(0, 0);
         playerTwoPosition = new Tuple<int, int>(rows - 1, cols - 1);
         currentPlayer = true;
@@ -441,5 +450,12 @@ public partial class Board : MonoBehaviour
         go1.transform.SetParent(transform);
         playerTwo = go1.GetComponent<Player>();
         PlacePlayer(playerTwo, playerTwoPosition.Item1, playerTwoPosition.Item2, playerTwoYShift);
+    }
+
+    public void swapPlayers()
+    {
+        Tuple<int, int> temp = playerOnePosition;
+        playerOnePosition = playerTwoPosition;
+        playerTwoPosition = temp;
     }
 }

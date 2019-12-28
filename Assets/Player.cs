@@ -23,15 +23,14 @@ public class Player : MonoBehaviour
 
     public int maxStamina = 100;
 
-    public int abilityOne = 0;// those ones are id of ability
+    public int abilityOne = 1;// those ones are id of ability
 
-    public int abilityTwo = 1;
+    public int abilityTwo = 2;
 
     public int abilitiyOneCooldown = 0;
 
     public int abilitiyTwoCooldown = 0;
-    public Board board; // required for abilities to affect board state
-
+    
     // Start is called before the first frame update
 
 
@@ -117,6 +116,65 @@ public class Player : MonoBehaviour
         coins = 0;
         movingTypeSwitched = false;
     }
+
+    public void UseAbility1(Board board)
+    {
+        if(abilitiyOneCooldown == 0)
+            UseAbility(board,1, abilityOne);
+    }
+    public void UseAbility2(Board board)
+    {
+        if (abilitiyTwoCooldown == 0)
+            UseAbility(board,2, abilityTwo);
+    }
+
+    public void UseAbility(Board board,int num, int id)
+    {
+
+        switch (num)
+        {
+            case 1:
+                if (num == 1)
+                { 
+                    abilitiyOneCooldown = Ability1();
+                }
+                else
+                {
+                    abilitiyTwoCooldown = Ability1();
+                }
+                
+                break;
+            case 2:
+                if (num == 1)
+                {
+                    abilitiyOneCooldown = Ability2(board);
+                }
+                else
+                {
+                    abilitiyTwoCooldown = Ability2(board);
+                }
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+    }
+
+    public int Ability1()
+    {
+        currentHealth = maxHealth;
+        return 10;
+    }
+    public int Ability2(Board board)
+    {
+        board.swapPlayers();
+        return 10;
+    }
+
+
 
 
 }
