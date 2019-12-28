@@ -130,10 +130,13 @@ public partial class Board : MonoBehaviour
                 if (IsTurnValid(x, y))
                 {
                     Move(x, y);
-                    /*
-                     *             if (tiles[x, y].mine)
-                RecountTiles(x, y);
-                     */
+
+                    if (tiles[x, y].mine)
+                        for(int i = x - 1; i < x +1; i++)
+                            for(int j = y - 1; j < y + 1; j++)
+                                RecountTiles(x, y);
+
+                    SetAllTextNumbers();
                 }
 
             }
@@ -235,6 +238,7 @@ public partial class Board : MonoBehaviour
     }
 
 
+
     public void Reset()
     {
         playerOne.Reset();
@@ -243,6 +247,7 @@ public partial class Board : MonoBehaviour
         playerTwoPosition = new Tuple<int, int>(rows-1, cols-1);
         PlacePlayer(playerOne, playerOnePosition.Item1, playerOnePosition.Item2, playerOneYShift);
         PlacePlayer(playerTwo, playerTwoPosition.Item1, playerTwoPosition.Item2, playerTwoYShift);
+        currentPlayer = true;
 
         for (int i = 0; i < 10; i++)
         {
